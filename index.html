@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<title>LumosOS</title>
+<style>
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: rgb(0, 0, 0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+  }
+  #inputField {
+    width: 300px;
+    padding: 12px 16px;
+    font-size: 18px;
+    border: none;
+    border-radius: 10px;
+    outline: none;
+    background: #222;
+    color: #eee;
+    caret-color: rgb(255, 255, 255);
+  }
+  #notifications {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 320px;
+    pointer-events: none;
+  }
+  .notification {
+    background: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    padding: 12px 20px;
+    margin-bottom: 10px;
+    border-radius: 20px;
+    opacity: 0;
+    animation: fadeInOut 6s forwards;
+    box-shadow: 0 0 10px rgb(67, 3, 97);
+    font-weight: bold;
+  }
+  @keyframes fadeInOut {
+    0%   {opacity: 0; transform: translateY(-20px);}
+    10%  {opacity: 1; transform: translateY(0);}
+    90%  {opacity: 1; transform: translateY(0);}
+    100% {opacity: 0; transform: translateY(-20px);}
+  }
+</style>
+</head>
+<body>
+
+<input id="inputField" type="text" placeholder="Message" autocomplete="off" />
+
+<div id="notifications"></div>
+
+<script>
+  const input = document.getElementById('inputField');
+  const notifications = document.getElementById('notifications');
+
+  input.focus();
+
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = '';
+      simulateBotResponse(text);
+    }
+  });
+
+function simulateBotResponse(userText) {
+  const normalized = userText.toLowerCase();
+
+  const responsesMap = {
+    "hi": "Hi! How's it goin?",
+    "what can you do": "everything that you need",
+    "bye": "bye"
+  };
+
+  let reply = null;
+  for (const key in responsesMap) {
+    if (normalized.includes(key)) {
+      reply = responsesMap[key];
+      break;
+    }
+  }
+
+  if (!reply) {
+    const defaultReplies = [
+      "Tell me more.",
+      "Interesting",
+      "Gotcha."
+    ];
+    reply = defaultReplies[Math.floor(Math.random() * defaultReplies.length)];
+  }
+
+  showNotification(reply);
+}
+
+  function showNotification(text) {
+    const div = document.createElement('div');
+    div.className = 'notification';
+    div.textContent = text;
+    notifications.appendChild(div);
+    setTimeout(() => div.remove(), 6000);
+  }
+</script>
+
+</body>
+</html>
